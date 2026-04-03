@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Users,
   Grid3X3,
+  BookOpen,
   BarChart3,
   Settings,
   LogOut,
@@ -20,6 +21,7 @@ const navItems = [
   { href: '/dashboard', label: 'Visao Geral', icon: LayoutDashboard },
   { href: '/dashboard/patients', label: 'Pacientes', icon: Users },
   { href: '/dashboard/boards', label: 'Pranchas', icon: Grid3X3 },
+  { href: '/dashboard/literacy', label: 'Letramento', icon: BookOpen },
   { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/dashboard/settings', label: 'Configuracoes', icon: Settings },
 ];

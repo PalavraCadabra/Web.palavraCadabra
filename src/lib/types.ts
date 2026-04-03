@@ -154,3 +154,69 @@ export const FITZGERALD_COLORS: Record<Symbol['grammatical_class'], string> = {
   misc: '#9E9E9E',
   question: '#9C27B0',
 };
+
+// ─── Literacy ────────────────────────────────────────
+
+export interface LiteracyProgram {
+  id: string;
+  profile_id: string;
+  assigned_by: string;
+  name: string;
+  current_stage: 'foundations' | 'emerging' | 'developing' | 'conventional';
+  is_active: boolean;
+  started_at: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LiteracyActivity {
+  id: string;
+  activity_type: string;
+  stage: string;
+  title: string;
+  description: string;
+  difficulty_level: number;
+  content: Record<string, unknown>;
+  estimated_duration_minutes: number;
+  is_template: boolean;
+}
+
+export interface ActivityResult {
+  id: string;
+  program_id: string;
+  activity_id: string;
+  profile_id: string;
+  started_at: string;
+  completed_at: string | null;
+  score: number | null;
+  correct_answers: number;
+  total_questions: number;
+  time_spent_seconds: number;
+}
+
+export interface LiteracyProgress {
+  program_id: string;
+  profile_name: string;
+  current_stage: string;
+  total_activities_completed: number;
+  average_score: number;
+  total_time_minutes: number;
+  activities_by_type: Record<string, { completed: number; avg_score: number }>;
+  milestones: Array<{ type: string; achieved_at: string }>;
+  recommendations: string[];
+}
+
+export const stageLabels: Record<string, string> = {
+  foundations: 'Fundamentos',
+  emerging: 'Emergente',
+  developing: 'Desenvolvimento',
+  conventional: 'Convencional',
+};
+
+export const stageColors: Record<string, string> = {
+  foundations: '#9C27B0',
+  emerging: '#4CAF50',
+  developing: '#2196F3',
+  conventional: '#FFC107',
+};

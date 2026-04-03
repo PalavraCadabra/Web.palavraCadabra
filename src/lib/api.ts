@@ -1,7 +1,11 @@
 import type {
   AACProfile,
+  ActivityResult,
   Board,
   BoardCell,
+  LiteracyActivity,
+  LiteracyProgram,
+  LiteracyProgress,
   LoginResponse,
   Symbol,
   UsageLog,
@@ -182,6 +186,48 @@ class ApiClient {
     if (params.event_type) searchParams.set('event_type', params.event_type);
     if (params.limit) searchParams.set('limit', String(params.limit));
     return this.request<UsageLog[]>(`/usage-logs?${searchParams.toString()}`);
+  }
+
+  // ─── Literacy ─────────────────────────────────────────
+
+  async getLiteracyPrograms(profileId?: string): Promise<LiteracyProgram[]> {
+    const searchParams = new URLSearchParams();
+    if (profileId) searchParams.set('profile_id', profileId);
+    const qs = searchParams.toString();
+    return this.request<LiteracyProgram[]>(`/literacy/programs${qs ? `?${qs}` : ''}`);
+  }
+
+  async createLiteracyProgram(data: Partial<LiteracyProgram>): Promise<LiteracyProgram> {
+    return this.request<LiteracyProgram>('/literacy/programs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateLiteracyProgram(id: string, data: Partial<LiteracyProgram>): Promise<LiteracyProgram> {
+    return this.request<LiteracyProgram>(`/literacy/programs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getLiteracyActivities(stage?: string): Promise<LiteracyActivity[]> {
+    const searchParams = new URLSearchParams();
+    if (stage) searchParams.set('stage', stage);
+    const qs = searchParams.toString();
+    return this.request<LiteracyActivity[]>(`/literacy/activities${qs ? `?${qs}` : ''}`);
+  }
+
+  async getActivityResults(programId?: string, profileId?: string): Promise<ActivityResult[]> {
+    const searchParams = new URLSearchParams();
+    if (programId) searchParams.set('program_id', programId);
+    if (profileId) searchParams.set('profile_id', profileId);
+    const qs = searchParams.toString();
+    return this.request<ActivityResult[]>(`/literacy/results${qs ? `?${qs}` : ''}`);
+  }
+
+  async getLiteracyProgress(programId: string): Promise<LiteracyProgress> {
+    return this.request<LiteracyProgress>(`/literacy/programs/${programId}/progress`);
   }
 
   // ─── Backup ───────────────────────────────────────────
