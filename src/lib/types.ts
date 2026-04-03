@@ -89,6 +89,25 @@ export interface CareRelationship {
   relationship_type: 'caregiver' | 'therapist' | 'teacher' | 'admin';
   permissions: Record<string, unknown>;
   created_at: string;
+  user_name?: string;
+  user_email?: string;
+  profile_name?: string;
+}
+
+export interface InviteRequest {
+  profile_id: string;
+  email: string;
+  relationship_type: string;
+  message?: string;
+}
+
+export interface InviteResponse {
+  id: string;
+  profile_id: string;
+  email: string;
+  relationship_type: string;
+  status: string;
+  message?: string;
 }
 
 export interface LoginResponse {

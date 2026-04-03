@@ -3,6 +3,9 @@ import type {
   ActivityResult,
   Board,
   BoardCell,
+  CareRelationship,
+  InviteRequest,
+  InviteResponse,
   LiteracyActivity,
   LiteracyProgram,
   LiteracyProgress,
@@ -228,6 +231,68 @@ class ApiClient {
 
   async getLiteracyProgress(programId: string): Promise<LiteracyProgress> {
     return this.request<LiteracyProgress>(`/literacy/programs/${programId}/progress`);
+  }
+
+  // ─── Care Relationships ─────────────────────────────
+
+  async getCareRelationships(profileId?: string): Promise<CareRelationship[]> {
+    const searchParams = new URLSearchParams();
+    if (profileId) searchParams.set('profile_id', profileId);
+    const qs = searchParams.toString();
+    return this.request<CareRelationship[]>(`/care${qs ? `?${qs}` : ''}`);
+  }
+
+  async getMyPatients(): Promise<CareRelationship[]> {
+    return this.request<CareRelationship[]>('/care/my-patients');
+  }
+
+  async inviteToCare(data: InviteRequest): Promise<InviteResponse> {
+    return this.request<InviteResponse>('/care/invite', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async removeCareRelationship(id: string): Promise<void> {
+    return this.request<void>(`/care/${id}`, { method: 'DELETE' });
+  }
+
+  // ─── Research ──────────────────────────────────────────
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getResearchCommunicationStats(params?: {
+    since?: string;
+    until?: string;
+  }): Promise<any> {
+    const searchParams = new URLSearchParams();
+    if (params?.since) searchParams.set('since', params.since);
+    if (params?.until) searchParams.set('until', params.until);
+    const qs = searchParams.toString();
+    return this.request(
+      `/research/aggregate/communication${qs ? `?${qs}` : ''}`
+    );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getResearchVocabularyStats(): Promise<any> {
+    return this.request('/research/aggregate/vocabulary');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getResearchLiteracyStats(): Promise<any> {
+    return this.request('/research/aggregate/literacy');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getResearchCohorts(): Promise<any> {
+    return this.request('/research/cohorts');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async exportResearchData(format: string = 'json'): Promise<any> {
+    return this.request(
+      `/research/export/anonymized?format=${format}`
+    );
   }
 
   // ─── Backup ───────────────────────────────────────────

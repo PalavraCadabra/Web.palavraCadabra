@@ -1,0 +1,69 @@
+; =====================================================
+; DNS Records for palavracadabra.com.br
+; Configure these at registro.br
+; =====================================================
+;
+; Last updated: 2026-04-03
+;
+
+; --- SSL Certificate Validation (ACM) ---
+; This should already be configured if the certificate is validated.
+; If not, add this CNAME record:
+;
+; _54a594f8f9db35f5fa38e98ea0df0e0b.palavracadabra.com.br  CNAME  _ce91e7ef19ff440ef26ae494a6f302d6.jkddzztszm.acm-validations.aws.
+
+; --- Web Portal ---
+; CloudFront Distribution: E1JD6C88YRK9YO
+; CloudFront Domain: d29juhl7g3u42p.cloudfront.net
+;
+; IMPORTANT: registro.br does NOT support CNAME on the root domain (palavracadabra.com.br).
+; Options:
+;   1. Use www.palavracadabra.com.br as the primary domain (recommended for registro.br)
+;   2. Transfer DNS to Route53 (supports ALIAS records on root domains)
+;   3. Use a DNS provider that supports ANAME/ALIAS records (e.g., Cloudflare)
+;
+; For www subdomain (works with registro.br):
+www.palavracadabra.com.br      CNAME   d29juhl7g3u42p.cloudfront.net
+
+; For root domain, if using Route53 or compatible DNS:
+; palavracadabra.com.br         ALIAS   d29juhl7g3u42p.cloudfront.net
+
+; --- API ---
+api.palavracadabra.com.br      CNAME   palavracadabra-dev-alb-1410301487.us-east-1.elb.amazonaws.com
+
+; --- Assets CDN (existing) ---
+; assets.palavracadabra.com.br  CNAME   d372vq2sbt8u3c.cloudfront.net
+
+; =====================================================
+; Summary of AWS Resources
+; =====================================================
+;
+; Web Portal:
+;   S3 Bucket:             palavracadabra-dev-web
+;   S3 Website Endpoint:   palavracadabra-dev-web.s3-website-us-east-1.amazonaws.com
+;   CloudFront Dist ID:    E1JD6C88YRK9YO
+;   CloudFront Domain:     d29juhl7g3u42p.cloudfront.net
+;   SSL Certificate:       arn:aws:acm:us-east-1:237494380636:certificate/3e40e8ae-c38f-45b7-96a5-6f8b3acee712
+;
+; API:
+;   ALB:                   palavracadabra-dev-alb-1410301487.us-east-1.elb.amazonaws.com
+;   HTTPS Listener:        Port 443 with TLS 1.3
+;   HTTP Listener:         Port 80 -> Redirect to HTTPS (301)
+;
+; Assets:
+;   CloudFront:            d372vq2sbt8u3c.cloudfront.net
+;
+; =====================================================
+; NEXT STEPS
+; =====================================================
+;
+; 1. Add DNS records above at registro.br
+; 2. Wait for DNS propagation (up to 48 hours, usually minutes)
+; 3. Wait for CloudFront distribution to deploy (Status: InProgress -> Deployed, ~15 minutes)
+; 4. Test: https://www.palavracadabra.com.br
+; 5. Test: https://api.palavracadabra.com.br/api/v1/health
+;
+; For root domain access (palavracadabra.com.br without www):
+;   Consider migrating DNS to Route53 or using a redirect service.
+;   Alternatively, at registro.br, set up URL forwarding from
+;   palavracadabra.com.br -> www.palavracadabra.com.br
