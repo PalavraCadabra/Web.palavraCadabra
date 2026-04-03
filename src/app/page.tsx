@@ -675,14 +675,14 @@ export default function LandingPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="/privacidade" className="hover:text-white transition-colors">
                     Política de Privacidade
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="/termos" className="hover:text-white transition-colors">
                     Termos de Uso
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
