@@ -7,8 +7,8 @@ export const metadata = {
 };
 
 export default function DownloadPage() {
-  const apkUrl = "https://palavracadabra-downloads.s3.amazonaws.com/palavra-cadabra-latest.apk";
-  const pwaUrl = "http://palavracadabra-app-pwa.s3-website-us-east-1.amazonaws.com";
+  const apkUrl = "https://downloads.palavracadabra.com.br/palavra-cadabra-latest.apk";
+  const pwaUrl = "https://app.palavracadabra.com.br";
 
   return (
     <div className="min-h-screen bg-[#FFFBFE]">

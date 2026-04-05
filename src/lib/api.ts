@@ -42,6 +42,8 @@ class ApiClient {
     const res = await fetch(`${API_URL}${path}`, {
       ...options,
       headers: { ...headers, ...(options?.headers as Record<string, string>) },
+      // Don't follow redirects — FastAPI 307 to trailing-slash loses POST body
+      redirect: 'error',
     });
 
     if (!res.ok) {
@@ -84,7 +86,7 @@ class ApiClient {
   // ─── Profiles ─────────────────────────────────────────
 
   async getProfiles(): Promise<AACProfile[]> {
-    return this.request<AACProfile[]>('/profiles');
+    return this.request<AACProfile[]>('/profiles/');
   }
 
   async getProfile(id: string): Promise<AACProfile> {
@@ -96,7 +98,7 @@ class ApiClient {
     data: Partial<AACProfile>
   ): Promise<AACProfile> {
     return this.request<AACProfile>(`/profiles/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
   }
@@ -111,7 +113,7 @@ class ApiClient {
     if (params?.profile_id) searchParams.set('profile_id', params.profile_id);
     if (params?.templates_only) searchParams.set('templates_only', 'true');
     const qs = searchParams.toString();
-    return this.request<Board[]>(`/boards${qs ? `?${qs}` : ''}`);
+    return this.request<Board[]>(`/boards/${qs ? `?${qs}` : ''}`);
   }
 
   async getBoard(id: string): Promise<Board> {
@@ -119,7 +121,7 @@ class ApiClient {
   }
 
   async createBoard(data: Partial<Board>): Promise<Board> {
-    return this.request<Board>('/boards', {
+    return this.request<Board>('/boards/', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -127,7 +129,7 @@ class ApiClient {
 
   async updateBoard(id: string, data: Partial<Board>): Promise<Board> {
     return this.request<Board>(`/boards/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
   }
@@ -151,7 +153,7 @@ class ApiClient {
     data: Partial<BoardCell>
   ): Promise<BoardCell> {
     return this.request<BoardCell>(`/boards/${boardId}/cells/${cellId}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
   }
@@ -174,7 +176,14 @@ class ApiClient {
     if (params?.search) searchParams.set('search', params.search);
     if (params?.limit) searchParams.set('limit', String(params.limit));
     const qs = searchParams.toString();
-    return this.request<Symbol[]>(`/symbols${qs ? `?${qs}` : ''}`);
+    return this.request<Symbol[]>(`/symbols/${qs ? `?${qs}` : ''}`);
+  }
+
+  async getSymbolsByIds(ids: string[]): Promise<Symbol[]> {
+    return this.request<Symbol[]>('/symbols/batch', {
+      method: 'POST',
+      body: JSON.stringify(ids),
+    });
   }
 
   // ─── Usage Logs ───────────────────────────────────────
@@ -188,7 +197,7 @@ class ApiClient {
     searchParams.set('profile_id', params.profile_id);
     if (params.event_type) searchParams.set('event_type', params.event_type);
     if (params.limit) searchParams.set('limit', String(params.limit));
-    return this.request<UsageLog[]>(`/usage-logs?${searchParams.toString()}`);
+    return this.request<UsageLog[]>(`/usage-logs/?${searchParams.toString()}`);
   }
 
   // ─── Literacy ─────────────────────────────────────────
@@ -209,7 +218,7 @@ class ApiClient {
 
   async updateLiteracyProgram(id: string, data: Partial<LiteracyProgram>): Promise<LiteracyProgram> {
     return this.request<LiteracyProgram>(`/literacy/programs/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
   }
@@ -230,7 +239,7 @@ class ApiClient {
   }
 
   async getLiteracyProgress(programId: string): Promise<LiteracyProgress> {
-    return this.request<LiteracyProgress>(`/literacy/programs/${programId}/progress`);
+    return this.request<LiteracyProgress>(`/literacy/progress/${programId}`);
   }
 
   // ─── Care Relationships ─────────────────────────────
@@ -239,7 +248,7 @@ class ApiClient {
     const searchParams = new URLSearchParams();
     if (profileId) searchParams.set('profile_id', profileId);
     const qs = searchParams.toString();
-    return this.request<CareRelationship[]>(`/care${qs ? `?${qs}` : ''}`);
+    return this.request<CareRelationship[]>(`/care/${qs ? `?${qs}` : ''}`);
   }
 
   async getMyPatients(): Promise<CareRelationship[]> {
@@ -298,7 +307,7 @@ class ApiClient {
   // ─── Backup ───────────────────────────────────────────
 
   async exportData(): Promise<Record<string, unknown>> {
-    return this.request<Record<string, unknown>>('/export');
+    return this.request<Record<string, unknown>>('/backup/export');
   }
 }
 
