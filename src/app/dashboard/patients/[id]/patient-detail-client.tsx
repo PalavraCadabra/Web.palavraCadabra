@@ -73,8 +73,25 @@ function generateVocabData() {
 }
 
 export default function PatientDetailClient() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
+
+  // Extract ID from URL pathname directly — useParams() may return
+  // 'placeholder' when served from the static placeholder page.
+  const id = (() => {
+    const paramId = params.id;
+    if (paramId && paramId !== 'placeholder') return paramId;
+    // Fallback: read from browser URL
+    if (typeof window !== 'undefined') {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      // /dashboard/patients/{id} → parts = ['dashboard', 'patients', '{id}']
+      const idx = parts.indexOf('patients');
+      if (idx >= 0 && idx + 1 < parts.length) {
+        return parts[idx + 1];
+      }
+    }
+    return paramId;
+  })();
   const [profile, setProfile] = useState<AACProfile | null>(null);
   const [boards, setBoards] = useState<Board[]>([]);
   const [logs, setLogs] = useState<UsageLog[]>([]);

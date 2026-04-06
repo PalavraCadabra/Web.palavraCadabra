@@ -9,8 +9,20 @@ import { api } from '@/lib/api';
 import type { Board, BoardCell } from '@/lib/types';
 
 export default function BoardEditorPageClient() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
+
+  // Extract ID from URL — useParams() may return 'placeholder'
+  const id = (() => {
+    const paramId = params.id;
+    if (paramId && paramId !== 'placeholder') return paramId;
+    if (typeof window !== 'undefined') {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const idx = parts.indexOf('boards');
+      if (idx >= 0 && idx + 1 < parts.length) return parts[idx + 1];
+    }
+    return paramId;
+  })();
   const [board, setBoard] = useState<Board | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
