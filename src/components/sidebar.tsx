@@ -15,12 +15,14 @@ import {
   Menu,
   X,
   Sparkles,
+  Rocket,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 
 const navItems = [
   { href: '/dashboard', label: 'Visao Geral', icon: LayoutDashboard },
+  { href: '/dashboard/comecar', label: 'Como comecar', icon: Rocket },
   { href: '/dashboard/patients', label: 'Pacientes', icon: Users },
   { href: '/dashboard/boards', label: 'Pranchas', icon: Grid3X3 },
   { href: '/dashboard/literacy', label: 'Letramento', icon: BookOpen },
